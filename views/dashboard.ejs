@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/8133639c1c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/Styles.css">
+    <title>Dashboard - StudyCoop</title>
+</head>
+
+<body>
+    <header>
+        <h2 class="logo">@ StudyCoop</h2>
+        <nav class="menu">
+            <a href="/profile">Mi cuenta</a>
+            <div class="dropdown">
+                <a class="dropbtn"><i class="fas fa-cog"></i></a>
+                <div class="dropdown-content">
+                    <a href="/logout">Cerrar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Barra de búsqueda -->
+    <form id="searchForm" action="/search" method="get" class="search-form">
+        <input type="text" name="query" id="search" placeholder="Buscar...">
+        <button type="submit"><i class="fas fa-search"></i></button>
+    </form>
+
+    <!-- Pestañas -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Servicios')">Servicios</button>
+        <button class="tablinks" onclick="openTab(event, 'Solicitudes')">Solicitudes</button>
+    </div>
+    <div id="Servicios" class="tabcontent">
+        <ul id="ultimas-ofrecer">
+            <% if (servicios && servicios.length> 0) { %>
+                <% servicios.forEach(servicio=> { %>
+                    <li class="publicacion-item"
+                        style="border: 1px solid #ccc; padding: 20px; border-radius: 5px; margin-bottom: 15px;">
+                        <h3>Asesoría - <%= servicio.materia %>
+                        </h3>
+                        <p><strong>Tema:</strong>
+                            <%= servicio.tema_interes %>
+                        </p>
+                        <p><strong>Fecha:</strong>
+                            <%= new Date(servicio.fecha_reunion).toLocaleDateString() %>
+                        </p>
+                        <p><strong>Hora:</strong>
+                            <%= servicio.hora %>
+                        </p>
+                        <button onclick='verDetalles(<%- JSON.stringify(servicio) %>)' class="boton-detalles">Ver
+                            Detalles</button>
+                    </li>
+                    <% }) %>
+                        <% } else { %>
+                            <p>No hay servicios disponibles.</p>
+                            <% } %>
+        </ul>
+    </div>
+
+    <div id="Solicitudes" class="tabcontent">
+        <ul id="ultimas-solicitudes">
+            <% if (solicitudes && solicitudes.length> 0) { %>
+                <% solicitudes.forEach(solicitud=> { %>
+                    <li class="publicacion-item"
+                        style="border: 1px solid #ccc; padding: 20px; border-radius: 5px; margin-bottom: 15px;">
+                        <h3>Solicitud - <%= solicitud.materia %>
+                        </h3>
+                        <p><strong>Tema:</strong>
+                            <%= solicitud.tema_interes %>
+                        </p>
+                        <p><strong>Fecha:</strong>
+                            <%= new Date(solicitud.fecha_reunion).toLocaleDateString() %>
+                        </p>
+                        <p><strong>Hora:</strong>
+                            <%= solicitud.hora %>
+                        </p>
+                        <button onclick='verDetalles(<%- JSON.stringify(solicitud) %>)' class="boton-detalles">Ver
+                            Detalles</button>
+                    </li>
+                    <% }) %>
+                        <% } else { %>
+                            <p>No hay solicitudes disponibles.</p>
+                            <% } %>
+        </ul>
+    </div>
+
+    <div id="verDetalles" class="publicar-form"
+        style="display: none; padding: 50px; border-radius: 20px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; z-index: 1000;">
+        <h2 style="text-align: center; margin-bottom: 20px;">Detalles de la Publicación</h2>
+        <button onclick="cerrarDetalles()"
+            style="position: absolute; top: 20px; right: 20px; font-size: 24px; color: #555; cursor: pointer;">&times;</button>
+        <div id="detallesContenido" style="margin-bottom: 20px;"></div>
+        <button id="agendarButton"
+            style="width: 100%; padding: 15px; background-color: #4d4d5c; color: white; border: none; border-radius: 5px; cursor: pointer;">Agendar
+            Servicio</button>
+    </div>
+
+    <h1 style="text-align: center; margin-top: 50px; margin-bottom: 70px; color: #3c3c45;">Ofrece tus servicios o
+        Solicita uno</h1>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="toggleForm()"
+            style="border-radius: 5px; padding: 20px 40px; transition: background-color 0.3s; background-color: #4d4d5c; color: white; font-size: 20px;cursor: pointer;">Publicar</button>
+    </div>
+
+    <!-- Formulario de Publicación -->
+    <div id="publicarForm" class="publicar-form" style="display: none; padding: 50px; border-radius: 20px;">
+        <h2 style="text-align: center; margin-bottom: 20px;">Formulario de Publicación</h2>
+        <button onclick="toggleForm()"
+            style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: #555;cursor: pointer;">&times;</button>
+        <form action="/dashboard/publicar" method="post">
+            <label for="tipo">Tipo de Publicación:</label>
+            <select id="tipo" name="tipo" style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+                <option value="solicitar">Solicitar Servicio</option>
+                <option value="ofrecer">Ofrecer Servicio</option>
+            </select><br>
+            <label for="materia">Materia:</label>
+            <select id="materia" name="materia"
+                style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+                <option value="" disabled selected>Selecciona una materia</option>
+            </select><br>
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha"
+                style="width: 94%; padding: 10px; margin-bottom: 20px; border-radius: 5px;"><br>
+            <label for="hora">Hora:</label>
+            <select id="hora" name="hora" style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+                <option value="8-10">8-10</option>
+                <option value="10-12">10-12</option>
+                <option value="12-14">12-14</option>
+                <option value="14-16">14-16</option>
+                <option value="16-18">16-18</option>
+            </select><br>
+            <label for="tema">Tema:</label>
+            <input type="text" id="tema" name="tema"
+                style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px;"><br><br>
+            <button type="submit" onclick="toggleForm()"
+                style="width: 100%; padding: 15px; background-color: #4d4d5c; color: white; border: none; border-radius: 5px; cursor: pointer;">Enviar</button>
+        </form>
+        <button onclick="toggleForm()"
+            style="margin-top: 20px; padding: 15px; width: 100%; background-color: #ccc; color: #333; border: none; border-radius: 5px; cursor: pointer;">Cerrar</button>
+    </div>
+    <hr style="margin-top: 20px;">
+
+    <!-- Detalles de la publicación -->
+    <div id="verDetalles" class="publicar-form" style="display: none; padding: 50px; border-radius: 20px;">
+        <h2 style="text-align: center; margin-bottom: 20px;">Detalles de la Publicación</h2>
+        <button onclick="cerrarDetalles()"
+            style="position: absolute; top: 20px; right: 20px; font-size: 24px; color: #555;cursor: pointer;">&times;</button>
+        <div id="detallesContenido" style="margin-bottom: 20px;"></div>
+    </div>
+
+    <!-- Espacio para categorías -->
+    <div class="categorias-container">
+        <div class="flecha-izquierda" onmousedown="startScrolling(-100)" onmouseup="stopScrolling()">&#10094;</div>
+        <ul class="categorias-container2" id="categorias-lista"></ul>
+        <div class="flecha-derecha" onmousedown="startScrolling(100)" onmouseup="stopScrolling()">&#10095;</div>
+    </div>
+
+ <!-- Contenedor para resultados según materia -->
+ <h2 id="resultadosTitulo" style="padding: 25px; display: none;">Resultados según materia</h2>
+ <div id="publicaciones-lista" class="publicaciones-filtradas"></div>
+
+    <!-- Publicaciones recientes -->
+    <h2 style="padding: 25px;">Últimas publicaciones recientes</h2>
+    <div class="publicaciones-container" style="padding: 25px; margin-bottom: 30px; text-align: center;">
+        <div id="publicaciones-recientess" class="publicaciones-lista">
+            <% if (publicaciones && publicaciones.length> 0) { %>
+                <% publicaciones.forEach(publicacion=> { %>
+                    <div class="publicacion-item"
+                        style="border: 1px solid #ccc; padding: 20px; border-radius: 5px; margin-bottom: 15px;">
+                        <h3>
+                            <%= publicacion.tipo_servicio %> - <%= publicacion.materia %>
+                        </h3>
+                        <p><strong>Tema:</strong>
+                            <%= publicacion.tema_interes %>
+                        </p>
+                        <p><strong>Fecha:</strong>
+                            <%= new Date(publicacion.fecha_reunion).toLocaleDateString() %>
+                        </p>
+                        <p><strong>Hora:</strong>
+                            <%= publicacion.hora %>
+                        </p>
+                        <button onclick='verDetalles(<%- JSON.stringify(publicacion) %>)' class="boton-detalles">Ver
+                            Detalles</button>
+                    </div>
+                    <% }) %>
+                        <% } else { %>
+                            <p>No hay publicaciones recientes.</p>
+                            <% } %>
+        </div>
+    </div>
+
+    <script src="/scripts.js"></script>
+</body>
+
+</html>

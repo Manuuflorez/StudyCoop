@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/8133639c1c.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    emailjs.init('Zh5Xh3x-J1rmUjEuJ')
+  </script>
+  <link rel="stylesheet" href="/Styles.css">
+
+  <title>StudyCoop</title>
+</head>
+
+<body>
+  <header>
+    <h2 class="logo">@ StudyCoop</h2>
+    <input type="checkbox" id="check">
+    <label for="check" class="mostrar-menu">&#8801</label>
+    <nav class="menu">
+      <a href="/dashboard">Volver</a>
+      <a href="/profile">Mi cuenta</a>
+      <div class="dropdown">
+        <a class="dropbtn"><i class="fas fa-cog"></i></a>
+        <div class="dropdown-content">
+          <a href="/logout">Cerrar sesión</a>
+        </div>
+      </div>
+      <label for="check" class="esconder-menu">&#215</label>
+    </nav>
+  </header>
+  <div>
+    <h1 style="text-align: center; margin-top: 50px; margin-bottom: 0px; color: #3c3c45;">Reserva</h1>
+  </div>
+  <div id="principal">
+    <div class="background-container">
+      <div class="user-details">
+        <h3><i class="fas fa-user"></i>
+          <%= user.name %>
+            <%= user.lastname %>
+        </h3>
+        <div class="user-info">
+          <p><strong><br>Programa:</strong>
+            <%= user.program %>
+          </p>
+          <p><strong><br> &emsp; &emsp; &emsp; &emsp; &emsp;Email:</strong>
+            <%= user.email %>
+          </p>
+        </div>
+      </div>
+
+      <div class="shopping-details-container">
+        <i class="fas fa-calendar-alt icono-grande"></i>
+        <div class="shopping-details">
+          <h3>Detalles del servicio</h3>
+          <div class="advisor-info">
+            <p><strong><br>Asesoría:</strong>
+              <%= solicitud.materia %>
+            </p>
+            <p><strong>Día:</strong>
+              <%= new Date(solicitud.fecha_reunion).toLocaleDateString('es-ES', { weekday: 'long' }) %>
+            </p>
+            <p><strong>Horario:</strong>
+              <%= solicitud.hora %>
+            </p>
+            <p class="payment-info"><strong> &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;
+                &emsp; &emsp;Forma de pago:</strong> <input type="text" id="payment-input"
+                style="width: 30%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+            </p>
+            <button id="change-btn" class="change-btn">Aceptar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="summary">
+      <h3>Resumen</h3>
+      <div class="reservation-info">
+        <p><strong>Día:</strong>
+          <%= new Date(solicitud.fecha_reunion).toLocaleDateString('es-ES', { day: 'numeric' , month: 'long' ,
+            year: 'numeric' }) %>
+        </p>
+        <p><strong>Horario:</strong>
+          <%= solicitud.hora %>
+        </p>
+        <p><strong>Categoría:</strong>
+          <%= solicitud.materia %>
+        </p>
+        <p><strong>Tutor:</strong>
+          <%= solicitud.user_data.name %>
+            <%= solicitud.user_data.lastname %>
+        </p><br>
+      </div>
+      <hr>
+      <br>
+
+      <p><strong>Pago:</strong> <span id="payment-display"></span></p>
+      <button id="schedule-btn" class="schedule-btn">Agendar espacio</button>
+    </div>
+  </div>
+  <script>
+    const user = {
+        name: "<%= user.name %>",
+        lastname: "<%= user.lastname %>",
+        email: "<%= user.email %>",
+        program: "<%= user.program %>"
+    };
+    
+    const solicitud = {
+        tema_interes: "<%= solicitud.tema_interes %>",
+        fecha_reunion: "<%= solicitud.fecha_reunion %>",
+        hora: "<%= solicitud.hora %>",
+        tutor: "<%= solicitud.user_data.name %> <%= solicitud.user_data.lastname %>",
+        solicitud_id: "<%= solicitud.solicitud_id %>"
+    };
+</script>
+<script src="/scripts.js"></script>
+</body>

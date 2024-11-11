@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/8133639c1c.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        emailjs.init('Zh5Xh3x-J1rmUjEuJ');
+    </script>
+    <link rel="stylesheet" href="/Styles.css">
+    <title><%= title %></title>
+</head>
+<body>
+    <header>
+        <h2 class="logo">@ StudyCoop</h2>
+        <input type="checkbox" id="check">
+        <label for="check" class="mostrar-menu">
+            &#8801;
+        </label>
+        <nav class="menu">
+            <a href="/users/login">Iniciar Sesión</a>
+            <a href="/users/register">Regístrate</a>
+            <label for="check" class="esconder-menu">
+                &#215;
+            </label>
+        </nav>
+    </header>
+
+    <section id="banner">
+        <div class="contenido-banner">
+            <h3><span>Únete </span>a StudyCoop <br> y sube tu promedio</h3>
+            <a href="/users/register" class="boton-empezar">Únete</a>
+        </div>
+    </section>
+
+    <section id="personas">
+        <div>
+            <img src="/Images/Program.jpg" alt="Programación">
+            <h4>Solicitud y Creación de Espacios de Estudio:</h4>
+            <p>Descubre una nueva dimensión de aprendizaje con nuestra plataforma web. Aquí, los estudiantes tienen el poder de solicitar 
+                y crear espacios de estudio personalizados. Desde grupos de estudio temáticos hasta sesiones creativas, la diversidad es la clave. 
+                Únete y contribuye a la construcción de espacios de estudio únicos y adaptados a tus necesidades académicas.</p>
+        </div>
+        <div>
+            <img src="/Images/Calculo.jpg" alt="Cálculo">
+            <h4>Reserva con Valores Compartidos:</h4>
+            <p>En nuestra comunidad, las reservas van más allá del tiempo y el espacio. Al reservar un espacio de estudio, asigna un valor no monetario, 
+                desde un café hasta una comida, como símbolo de aprecio o colaboración. Experimenta una forma única de intercambio de conocimientos y valores. 
+                Únete a nosotros mientras redefinimos la manera en que los estudiantes interactúan y aprenden juntos. ¡Bienvenido a una nueva era de aprendizaje colaborativo!
+            </p>
+        </div>
+    </section>
+
+    <div class="linea"></div>
+
+    <section id="iconos">
+        <div class="titulo-iconos">
+            <h4>En nuestra plataforma podrás encontrar diferentes espacios de estudio:</h4>
+        </div>
+        <div class="contenido-icono">
+            <div>
+                <i class="fa-solid fa-book-open fa-3x"></i>
+                <h4>Matemáticas</h4>
+                <p>Desde los principios básicos de las matemáticas hasta los temas mas avanzados en cálculo y las ecuaciones diferenciales.</p>
+            </div>
+            <div>
+                <i class="fa-solid fa-code fa-3x"></i>
+                <h4>Programación</h4>
+                <p>Podrás aprender desde las bases de como hacer un pseudocódigo hasta las técnicas mas avanzadas de la programación mejorando tu lógica en el proceso.</p>
+            </div>
+            <div id="icono-mobile">
+                <i class="fa-solid fa-book-open fa-3x"></i>
+                <h4>Inglés</h4>
+                <p>Podrás tener esos conversatorios que tanto buscas y así mejorar tus capacidades lingüísticas y potenciar tu capacidad de escucha.</p>
+            </div>
+        </div>
+        <div class="titulo-iconos">
+            <p>También podrás encontrar muchos más temas de estudio, desde un tema en general hasta los temas más específicos, todo desde una sola aplicación.</p>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; StudyCoop</p>
+    </footer>
+</body>
+
+</html>

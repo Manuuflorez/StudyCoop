@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/8133639c1c.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        emailjs.init('Zh5Xh3x-J1rmUjEuJ')
+    </script>
+
+    <title>StudyCoop</title>
+
+</head>
+
+<body onload="mostrarSeccion('general')">
+    <header>
+        <h2 class="logo">@ StudyCoop</h2>
+        <input type="checkbox" id="check">
+        <label for="check" class="mostrar-menu">&#8801</label>
+        <nav class="menu">
+            <a href="/users/dashboard">Volver</a>
+            <!-- Lista desplegable de ajustes -->
+            <div class="dropdown">
+                <a class="dropbtn"><i class="fas fa-cog"></i></a>
+                <div class="dropdown-content">
+                    <a href="/logout">Cerrar sesión</a>
+                </div>
+            </div>
+            <!-- Fin de lista desplegable -->
+            <label for="check" class="esconder-menu">&#215</label>
+        </nav>
+    </header>
+
+    <div class="sidebar">
+        <a id="generalLink" class="active" onclick="mostrarSeccion('general')"> <i
+                class="fa-solid fa-user-tie input-icon"></i> General</a>
+        <a id="publicacionesLink" onclick="mostrarSeccion('publicaciones')"><i class="fa fa-folder"></i>
+            Publicaciones</a>
+        <a id="cambiarContrasenaLink" onclick="mostrarSeccion('cambiarContrasena')"> <i class="fas fa-lock"></i> Cambiar
+            contraseña</a>
+        <a id="cambiarCorreoLink" onclick="mostrarSeccion('cambiarCorreo')"><i class="fas fa-envelope"></i> Cambiar
+            correo</a>
+        <a id="agendamientosLink" onclick="mostrarSeccion('agendamientos')"><i class="fas fa-calendar-alt"></i>
+            Agendamientos</a>
+        <a id="desactivarCuentaLink" onclick="desactivarCuenta('modalDesactivarCuenta')"> <i
+                class="fas fa-user-times"></i> Desactivar
+            cuenta</a>
+    </div>
+
+    <div id="modalDesactivarCuenta" class="modal">
+        <div class="modal-content">
+            <h2>Confirmar Desactivación</h2><br>
+            <p>¿Estás seguro de que quieres desactivar tu cuenta?</p><br>
+            <div>
+                <button class="confirm-button" onclick="confirmarDesactivacion()">Desactivar</button>
+                <span>&nbsp;</span>
+                <span>&nbsp;</span>
+                <span>&nbsp;</span>
+                <span>&nbsp;</span>
+                <button class="cancel-button" onclick="cancelarDesactivacion()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalConfirmacionDesactivacion" class="modal">
+        <div class="modal-content">
+            <h2>Cuenta Desactivada</h2><br>
+            <p>Tu cuenta ha sido desactivada exitosamente.</p><br>
+            <button class="ok-button" onclick="redireccionarLogin()">OK</button>
+        </div>
+    </div>
+
+    <div id="cambiarContrasena" class="container" style="display: none;">
+        <h1 style="margin-top: 25px;">Cambiar contraseña</h1>
+        <form id="changePasswordForm" method="POST" action="/users/update/<%= user.id %>">
+            <label for="oldPassword">Contraseña anterior:</label><br>
+            <input type="password" id="oldPassword" name="oldPassword" required
+                style="width: 50%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+            <label for="newPassword">Nueva contraseña:</label><br>
+            <input type="password" id="newPassword" name="newPassword" required minlength="8"
+                title="La contraseña debe contener al menos 8 caracteres, incluyendo al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"
+                style="width: 50%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+            <label for="confirmPassword">Confirmar nueva contraseña:</label><br>
+            <input type="password" id="confirmPassword" name="confirmPassword" required
+                style="width: 50%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+            <button type="submit" style="width: 53%; padding: 15px; background-color: #4d4d5c; color: white; border: none; border-radius: 5px; 
+                cursor: pointer;">Cambiar contraseña</button>
+        </form>
+    </div>
+    <div id="agendamientos" class="container" style="display: none;">
+        <h1 style="margin-top: 25px;">Tus Agendamientos</h1>
+        <div id="agendamientosLista">
+            <!-- Aquí se cargarán los agendamientos -->
+        </div>
+    </div>
+
+    <div id="modalErrorContrasena" class="modal">
+        <div class="modal-content">
+            <h2>Error</h2><br>
+            <p>La nueva contraseña y la confirmación de la<br> contraseña no coinciden.</p>
+            <button class="ok-button" onclick="cerrarModalErrorContrasena()">OK</button>
+        </div>
+    </div>
+
+    <div id="cambiarCorreo" class="container" style="display: none;">
+        <h1 style="margin-top: 25px;">Cambiar correo electrónico</h1>
+        <form id="oldPassword" method="POST" action="/users/update/<%= user.id %>">
+            <label for="oldPassword">Contraseña anterior:</label><br>
+            <input type="password" id="oldPassword" name="oldPassword" required
+                style="width: 50%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+            <label for="email">Nuevo correo electrónico:</label><br>
+            <input type="email" id="email" name="email" required
+                style="width: 50%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+            <button type="submit" style="width: 53%; padding: 15px; background-color: #4d4d5c; color: white; border: none; border-radius: 5px; 
+                cursor: pointer;">Cambiar correo electrónico</button>
+        </form>
+    </div>
+
+    <div id="general" class="container" style="margin-top: 150;">
+        <h1 style="margin-top: 25px;">Bienvenido, <%= user.name %>
+                <%= user.lastname %> <button onclick="editUser()" class="edit-icon" title="Editar Usuario">
+                        <i class="fas fa-pencil-alt"></i></button></h1>
+        <p>Email: <%= user.email %>
+        </p>
+        <ul>
+            <li>Nombre: <%= user.name %>
+            </li>
+            <li>Apellido: <%= user.lastname %>
+            </li>
+            <li>Tipo de Documento: <%= user.document_type %>
+            </li>
+            <li>Número de Documento: <%= user.id_number %>
+            </li>
+            <li>Programa: <%= user.program %>
+            </li>
+        </ul>
+
+        <div id="editarUsuarioForm"
+            style="z-index: 1000; display: none; background-color: rgba(255, 255, 255, 0.95); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 50px; border-radius: 20px; box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5); max-width: 400px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">Editar Usuario</h2>
+            <button onclick="closeEditForm()"
+                style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: #555;cursor: pointer;">&times;</button>
+            <form id="editUserForm" method="POST" action="/users/update/<%= user.id %>">
+                <label for="name" style="margin-bottom: 10px;">Nombre:</label><br>
+                <input type="text" id="name" name="name" value="<%= user.name %>" required
+                    style="width: 92%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+                <label for="lastname" style="margin-bottom: 10px;">Apellido:</label><br>
+                <input type="text" id="lastname" name="lastname" value="<%= user.lastname %>" required
+                    style="width: 92%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+                <label for="document_type" style="margin-bottom: 10px;">Tipo de Documento:</label><br>
+                <div style="position: relative;">
+                    <select id="document_type" name="document_type" required
+                        style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="" disabled>Tipo de Documento</option>
+                        <option value="CC" <% if(user.document_type==='CC' ) { %> selected <% } %>>C.C</option>
+                        <option value="TI" <% if(user.document_type==='TI' ) { %> selected <% } %>>T.I</option>
+                        <option value="CE" <% if(user.document_type==='CE' ) { %> selected <% } %>>C.E</option>
+                    </select>
+                    <i class="fa-regular fa-address-card input-icon"
+                        style="position: absolute; top: 35%; right: 25px; transform: translateY(-50%); color: #ccc;"></i>
+                </div>
+                <label for="id_number" style="margin-bottom: 10px;">Número de Documento:</label><br>
+                <input type="text" id="id_number" name="id_number" value="<%= user.id_number %>" required
+                    style="width: 92%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+                <label for="program" style="margin-bottom: 10px;">Programa:</label><br>
+                <div style="position: relative;">
+                    <select id="program" name="program" required
+                        style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="" disabled>Carrera</option>
+                        <option value="AdminEmpresDistancia" <% if(user.program==='AdminEmpresDistancia' ) { %> selected
+                            <% } %>>Administración de Empresas
+                        </option>
+                        <option value="ComSocialPresencial" <% if(user.program==='ComSocialPresencial' ) { %> selected
+                            <% } %>>Comunicación Social
+                        </option>
+                        <option value="ContaduriaPresencial" <% if(user.program==='ContaduriaPresencial' ) { %> selected
+                            <% } %>>Contaduría Pública
+                        </option>
+                        <option value="DerechoPresencial" <% if(user.program==='DerechoPresencial' ) { %> selected <% }
+                                %>
+                                >Derecho</option>
+                        <option value="DesarrolloFamiliarPresencial" <% if(user.program==='DesarrolloFamiliarPresencial'
+                            ) { %> selected <% } %>>Desarrollo Familiar</option>
+                        <option value="DisenoGraficoPresencial" <% if(user.program==='DisenoGraficoPresencial' ) { %>
+                            selected <% } %>>Diseño Gráfico</option>
+                        <option value="FilosofiaPresencial" <% if(user.program==='FilosofiaPresencial' ) { %> selected
+                            <% } %>>Filosofía
+                        </option>
+                        <option value="GastronomiaPresencial" <% if(user.program==='GastronomiaPresencial' ) { %>
+                            selected
+                            <% } %>>Gastronomía
+                        </option>
+                        <option value="IngSistemasPresencial" <% if(user.program==='IngSistemasPresencial' ) { %>
+                            selected
+                            <% } %>>Ingeniería de Sistemas
+                        </option>
+                        <option value="LicEducacionInfantilPresencial" <%
+                            if(user.program==='LicEducacionInfantilPresencial' ) { %> selected <% } %>>Licenciatura en
+                                Educación Infantil</option>
+                        <option value="LicLenguasExtranjerasPresencial" <%
+                            if(user.program==='LicLenguasExtranjerasPresencial' ) { %> selected <% } %>>Licenciatura en
+                                Lenguas Extranjeras</option>
+                        <option value="NegociosInternacionalesPresencial" <%
+                            if(user.program==='NegociosInternacionalesPresencial' ) { %> selected <% } %>>Negocios
+                                Internacionales</option>
+                        <option value="PsicologiaDistancia" <% if(user.program==='PsicologiaDistancia' ) { %> selected
+                            <% } %>>Psicología (Distancia)
+                        </option>
+                        <option value="PsicologiaPresencial" <% if(user.program==='PsicologiaPresencial' ) { %> selected
+                            <% } %>>Psicología (Presencial)
+                        </option>
+                        <option value="PublicidadPresencial" <% if(user.program==='PublicidadPresencial' ) { %> selected
+                            <% } %>>Publicidad
+                        </option>
+                        <option value="TeologiaPresencial" <% if(user.program==='TeologiaPresencial' ) { %> selected <%
+                                } %>
+                                >Teología</option>
+                        <option value="TrabajoSocialDistancia" <% if(user.program==='TrabajoSocialDistancia' ) { %>
+                            selected
+                            <% } %>>Trabajo Social (Distancia)
+                        </option>
+                    </select>
+                    <i class="fa-solid fa-user-tie input-icon"
+                        style="position: absolute; top: 35%; right: 25px; transform: translateY(-50%); color: #ccc;"></i>
+                </div>
+                <button type="submit"
+                    style="width: 100%; padding: 15px; background-color: #4d4d5c; color: white; border: none; border-radius: 5px; cursor: pointer;">Actualizar</button>
+            </form>
+            <button onclick="closeEditForm()"
+                style="margin-top: 20px; padding: 15px; width: 100%; background-color: #ccc; color: #333; border: none; border-radius: 5px; cursor: pointer;">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="publicaciones" class="container2" style="display: none;">
+        <h1 style="text-align: center;margin-top: 25px;">Listado de tus publicaciones</h1>
+        <h2 style="text-align: center; margin-top: 25px;">Solicitadas</h2>
+        <div id="solicitadas" style="margin-bottom: 50px;">
+            <!-- Contenedor para las publicaciones solicitadas -->
+        </div>
+
+
+        <h2 style="text-align: center; margin-top: 25px;">Ofrecidas</h2>
+        <div id="ofrecidas" style="margin-bottom: 50px;">
+            <!-- Contenedor para las publicaciones ofrecidas -->
+        </div>
+
+        <div id="modalContainer"
+            style="z-index: 1000; display: none; background-color: rgba(255, 255, 255, 0.95); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 50px; border-radius: 20px; box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);">
+            <h2 style="text-align: center; margin-bottom: 20px;">Confirmar eliminación</h2>
+            <p style="margin-bottom: 20px;">¿Estás seguro de que quieres eliminar esta publicación?</p>
+            <div style="display: flex; justify-content: space-around;">
+                <button onclick="cancelDelete()"
+                    style="padding: 15px; background-color: #ccc; color: #333; border: none; border-radius: 5px; cursor: pointer;">Cancelar</button>
+                <span>&nbsp;</span>
+                <span>&nbsp;</span>
+                <span>&nbsp;</span>
+                <span>&nbsp;</span>
+                <button onclick="confirmDelete()"
+                    style="padding: 15px; background-color: #ff4d4d; color: white; border: none; border-radius: 5px; cursor: pointer;">Eliminar</button>
+            </div>
+        </div>
+
+        <div id="deleteSuccessMessage"
+            style="display: none; background-color: #4CAF50; color: white; text-align: center; padding: 20px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);">
+            <p>¡Publicación eliminada con éxito!</p>
+        </div>
+
+        <div id="editarForm" class="editar-form"
+            style="z-index: 1000; display: none; background-color: rgba(255, 255, 255, 0.95); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 50px; border-radius: 20px; box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);">
+            <h2 style="text-align: center; margin-bottom: 20px;">Formulario de Edición</h2>
+            <button onclick="openEditForm()"
+                style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: #555;cursor: pointer;">&times;</button>
+            <form id="editForm" method="post">
+                <input type="hidden" id="user_data" name="user_data" value="<%= JSON.stringify(user) %>">
+                <label for="tipo">Tipo de Publicación:</label><br>
+                <select id="tipo" name="tipo"
+                    style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;">
+                    <option value="solicitar">Solicitar Servicio</option>
+                    <option value="ofrecer">Ofrecer Servicio</option>
+                </select><br>
+                <label for="materia">Materia:</label><br>
+                <select id="materia" name="materia"
+                    style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;">
+                    <option value="" disabled selected>Selecciona una materia</option>
+                </select><br>
+                <label for="fecha">Fecha:</label><br>
+                <input type="date" id="fecha" name="fecha"
+                    style="width: 92%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br>
+                <label for="tema">Tema:</label><br>
+                <input type="text" id="tema" name="tema"
+                    style="width: 92%; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;"><br><br>
+                <button type="submit"
+                    style="width: 100%; padding: 15px; background-color: #4d4d5c; color: white; border: none; border-radius: 5px; cursor: pointer;">Actualizar</button>
+            </form>
+            <button onclick="openEditForm()"
+                style="margin-top: 20px; padding: 15px; width: 100%; background-color: #ccc; color: #333; border: none; border-radius: 5px; cursor: pointer;">Cerrar</button>
+        </div>
+
+        <script>
+            var categorias = ["Matemáticas", "Física", "Programación", "Idiomas", "Derecho", "Pedagogía", "Comunicación", "Administración ", "Estadistica", "Otros"];
+            id = '<%= user.id %>';
+            password = '<%= user.password %>';
+
+            fetch(`/api/publicaciones-usuario/${id}`)
+                .then(response => response.json())
+                .then(async data => {
+                    const solicitadasContainer = document.getElementById('solicitadas');
+                    const ofrecidasContainer = document.getElementById('ofrecidas');
+
+                    for (const publicacion of data) {
+                        const div = document.createElement('div');
+                        div.classList.add('recuadro-publicacion');
+                        const titulo = document.createElement('h3');
+                        const br = document.createElement('br');
+                        const br2 = document.createElement('br');
+                        const materia = document.createElement('p');
+                        const tema = document.createElement('p');
+                        const fecha = document.createElement('p');
+                        const agendaUsuarios = document.createElement('p');
+                        const editButton = document.createElement('button');
+                        const deleteButton = document.createElement('button');
+
+                        titulo.textContent = publicacion.tipo_servicio === 'solicitar' ? `Solicitud: ${publicacion.materia}` : `Oferta: ${publicacion.materia}`;
+                        materia.textContent = `Materia: ${publicacion.materia}`;
+                        tema.textContent = `Tema: ${publicacion.tema_interes}`;
+                        fecha.textContent = `Fecha de reunión: ${formatDate(publicacion.fecha_reunion)}`;
+
+                        // Obtener los usuarios agendados para esta publicación
+                        try {
+                            const agendasResponse = await fetch(`/api/agendas-publicacion/${publicacion.solicitud_id}`);
+                            const agendasData = await agendasResponse.json();
+                            const usuariosAgendados = agendasData.map(agenda => {
+                                const userData = agenda.user_data;
+                                return `${userData.name} ${userData.lastname}`;
+                            }).join(', ');
+                            agendaUsuarios.textContent = `Usuarios que han agendado: ${usuariosAgendados}`;
+                        } catch (error) {
+                            console.error("Error al obtener las agendas de la publicación:", error);
+                            agendaUsuarios.textContent = `Error al obtener los usuarios que han agendado.`;
+                        }
+
+                        editButton.textContent = 'Editar';
+                        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                        deleteButton.setAttribute('data-id', publicacion.solicitud_id);
+
+                        deleteButton.classList.add('delete-button');
+                        editButton.classList.add('edit-button');
+                        editButton.setAttribute('data-id', publicacion.solicitud_id);
+
+                        editButton.addEventListener('click', () => {
+                            const fechaReunion = new Date(publicacion.fecha_reunion);
+                            const fechaFormateada = fechaReunion.toISOString().split('T')[0];
+                            document.getElementById('tipo').value = publicacion.tipo_servicio;
+                            document.getElementById('materia').value = publicacion.materia;
+                            document.getElementById('fecha').value = fechaFormateada;
+                            document.getElementById('tema').value = publicacion.tema_interes;
+                            document.getElementById('editForm').action = `/api/publicacion/${publicacion.solicitud_id}`;
+                            openEditForm();
+                        });
+
+                        deleteButton.addEventListener('click', () => {
+                            showDeleteConfirmation();
+                            const modalContainer = document.getElementById("modalContainer");
+                            const confirmDeleteButton = document.querySelector("#modalContainer button:last-child");
+                            confirmDeleteButton.onclick = async () => {
+                                try {
+                                    const response = await fetch(`/api/eliminar-publicacion/${publicacion.solicitud_id}`, {
+                                        method: 'DELETE'
+                                    });
+                                    if (response.ok) {
+                                        document.getElementById('deleteSuccessMessage').style.display = 'block';
+                                        setTimeout(() => {
+                                            document.getElementById('deleteSuccessMessage').style.display = 'none';
+                                        }, 3000);
+
+                                        // Actualizar la lista de publicaciones después de eliminar una
+                                        if (publicacion.tipo_servicio === 'solicitar') {
+                                            solicitadasContainer.removeChild(div);
+                                        } else {
+                                            ofrecidasContainer.removeChild(div);
+                                        }
+                                    } else {
+                                        console.error("Error al intentar eliminar la publicación");
+                                    }
+                                } catch (error) {
+                                    console.error("Error en la solicitud de eliminación:", error);
+                                } finally {
+                                    modalContainer.style.display = "none";
+                                }
+                            };
+                        });
+
+                        div.appendChild(titulo);
+                        div.appendChild(br);
+                        div.appendChild(materia);
+                        div.appendChild(tema);
+                        div.appendChild(fecha);
+                        div.appendChild(agendaUsuarios);
+                        div.appendChild(br2);
+                        div.appendChild(editButton);
+                        div.appendChild(deleteButton);
+
+                        // Agregar la publicación al contenedor adecuado
+                        if (publicacion.tipo_servicio === 'solicitar') {
+                            solicitadasContainer.appendChild(div);
+                        } else {
+                            ofrecidasContainer.appendChild(div);
+                        }
+                    }
+                })
+                .catch(error => console.error("Error al obtener las publicaciones del usuario:", error));
+
+            function formatDate(dateString) {
+                const fechaReunion = new Date(dateString);
+                const options = {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour12: true
+                };
+                return fechaReunion.toLocaleString('en-US', options);
+            }
+
+
+            function openEditForm() {
+                var editForm = document.getElementById("editarForm");
+                if (editForm.style.display === "none") {
+                    editForm.style.display = "block";
+                } else {
+                    editForm.style.display = "none";
+                }
+            }
+
+            function cancelDelete() {
+                var modalContainer = document.getElementById("modalContainer");
+                modalContainer.style.display = "none";
+            }
+
+            function confirmDelete() {
+                var modalContainer = document.getElementById("modalContainer");
+                modalContainer.style.display = "none";
+            }
+
+            function showDeleteConfirmation() {
+                var modalContainer = document.getElementById("modalContainer");
+                modalContainer.style.display = "block";
+            }
+
+            function generarOpcionesMaterias() {
+                var selectMateria = document.getElementById("materia");
+
+                selectMateria.innerHTML = "";
+
+                var defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent = "Selecciona una materia";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                selectMateria.appendChild(defaultOption);
+
+                categorias.forEach(function (categoria) {
+                    var option = document.createElement("option");
+                    option.value = categoria;
+                    option.textContent = categoria;
+                    selectMateria.appendChild(option);
+                });
+            }
+
+            window.onload = function () {
+                generarOpcionesMaterias();
+            }
+
+            function formatDate(dateString) {
+                const fechaReunion = new Date(dateString);
+                const options = {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour12: true
+                };
+                return fechaReunion.toLocaleString('en-US', options);
+            }
+
+            function editUser() {
+                var editForm = document.getElementById("editarUsuarioForm");
+                if (editForm.style.display === "none") {
+                    editForm.style.display = "block";
+                } else {
+                    editForm.style.display = "none";
+                }
+            }
+
+            function closeEditForm() {
+                document.getElementById('editarUsuarioForm').style.display = 'none';
+            }
+            function mostrarSeccion(seccion) {
+                var secciones = ['general', 'publicaciones', 'cambiarContrasena', 'cambiarCorreo', 'agendamientos'];
+                for (var i = 0; i < secciones.length; i++) {
+                    var elem = document.getElementById(secciones[i]);
+                    var link = document.getElementById(secciones[i] + 'Link');
+                    if (secciones[i] === seccion) {
+                        elem.style.display = 'block';
+                        link.classList.add('active');
+                        if (seccion === 'agendamientos') {
+                            fetchAgendamientos();
+                        }
+                    } else {
+                        elem.style.display = 'none';
+                        link.classList.remove('active');
+                    }
+                }
+            }
+
+
+
+            document.addEventListener("DOMContentLoaded", function () {
+                mostrarSeccion('general'); // Cambia 'general' por la sección que desees mostrar por defecto
+            });
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const userId = '<%= user.id %>';
+                fetch(`/api/agendas-publicacion/${userId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const agendamientosLista = document.getElementById('agendamientosLista');
+                        agendamientosLista.innerHTML = ''; // Limpiar contenido previo
+                        if (data.length === 0) {
+                            agendamientosLista.innerHTML = '<p>No se encontraron agendas.</p>';
+                        } else {
+                            data.forEach(agenda => {
+                                const agendaItem = document.createElement('div');
+                                agendaItem.className = 'agenda-item';
+
+                                const fecha = new Date(agenda.fecha);
+                                const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+                                const fechaFormateada = fecha.toLocaleDateString('es-ES', options);
+
+                                agendaItem.innerHTML = `
+                    
+                        <p><strong>Tema:</strong> ${agenda.tema}</p>
+                        <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+                        <p><strong>Tutor:</strong> ${agenda.tutor}</p>
+                        <p><strong>Pago:</strong> ${agenda.pago}</p>
+                        <p><strong>Hora:</strong> ${agenda.hora}</p>
+                    `;
+                                agendamientosLista.appendChild(agendaItem);
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error fetching profile agendamientos:', error));
+            });
+
+
+
+
+
+
+
+            document.getElementById("changePasswordForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                var newPassword = document.getElementById("newPassword").value;
+                var confirmPassword = document.getElementById("confirmPassword").value;
+
+                if (newPassword !== confirmPassword) {
+                    mostrarModalErrorContrasena();
+                } else {
+                    this.submit();
+                }
+            });
+
+            function mostrarModalErrorContrasena() {
+                var modal = document.getElementById("modalErrorContrasena");
+                modal.style.display = "block";
+            }
+
+            function cerrarModalErrorContrasena() {
+                var modal = document.getElementById("modalErrorContrasena");
+                modal.style.display = "none";
+            }
+
+            document.getElementById("changeEmailForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                var oldPasswordEmail = document.getElementById("oldPasswordEmail").value;
+                var email = document.getElementById("email").value;
+
+                this.submit();
+            });
+
+            function desactivarCuenta() {
+                document.getElementById('modalDesactivarCuenta').style.display = 'flex';
+            }
+
+            function cancelarDesactivacion() {
+                document.getElementById('modalDesactivarCuenta').style.display = 'none';
+            }
+
+            function confirmarDesactivacion() {
+                fetch(`/users/deactivate/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById('modalDesactivarCuenta').style.display = 'none';
+                            document.getElementById('modalConfirmacionDesactivacion').style.display = 'flex';
+                        } else {
+                            alert("Hubo un error al intentar desactivar tu cuenta. Por favor, intenta nuevamente más tarde.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Hubo un error al intentar desactivar tu cuenta. Por favor, intenta nuevamente más tarde.");
+                    });
+            }
+
+            function redireccionarLogin() {
+                window.location.href = '/users/login';
+            }
+        </script>
+</body>
+<!-- Contenedor para las publicaciones ofrecidas -->
+
+</html>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .sidebar {
+        margin: 0;
+        padding: 0;
+        width: 250px;
+        background-color: #f1f1f1;
+        position: fixed;
+        height: 100%;
+        overflow: auto;
+    }
+
+    .sidebar a {
+        display: block;
+        color: black;
+        padding: 16px;
+        text-decoration: none;
+    }
+
+    .sidebar a.active {
+        background-color: #4d4d5c;
+        color: white;
+    }
+
+    .sidebar a:hover:not(.active) {
+        background-color: #4d4d5c;
+        color: white;
+    }
+
+    div.content {
+        margin-top: 100px;
+        margin-left: 200px;
+        padding: 1px 16px;
+        height: 1000px;
+    }
+
+    @media screen and (max-width: 700px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+
+        .sidebar a {
+            float: left;
+        }
+
+        div.content {
+            margin-left: 0;
+        }
+    }
+
+    @media screen and (max-width: 400px) {
+        .sidebar a {
+            text-align: center;
+            float: none;
+        }
+    }
+
+    header {
+        height: 100px;
+        background: #4d4d5c;
+        padding: 0 50px;
+        color: aliceblue;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        width: 96%;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .logo {
+        text-transform: uppercase;
+        font-weight: 200;
+        color: whitesmoke;
+    }
+
+    .menu a {
+        color: #fff;
+        text-decoration: none;
+        text-transform: uppercase;
+        padding: 0 10px;
+        transition: 0.4s;
+    }
+
+    .mostrar-menu,
+    .esconder-menu {
+        font-size: 30px;
+        cursor: pointer;
+        transition: 0.4s;
+        display: none;
+    }
+
+    .mostrar-menu {
+        order: 1;
+    }
+
+    .edit-button {
+        border-radius: 5px;
+        padding: 10px 10px;
+        margin-bottom: 20px;
+        transition: background-color 0.3s;
+        background-color: #4d4d5c;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    .edit-icon {
+        border-radius: 5px;
+        padding: 10px 10px;
+        left: 200px;
+        position: relative;
+        margin-bottom: 20px;
+        transition: background-color 0.3s;
+        background-color: #4d4d5c;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    .menu a:hover,
+    .mostrar-menu:hover,
+    .esconder-menu:hover {
+        color: #666666;
+    }
+
+    #check {
+        display: none;
+    }
+
+    @media(max-width:768px) {
+
+        .mostrar-menu,
+        .esconder-menu {
+            display: block;
+        }
+
+        .menu {
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            width: 100%;
+            background: rgb(86, 87, 87);
+            right: -100%;
+            top: 0;
+            text-align: center;
+            padding: 100px 0px;
+            z-index: 100;
+            transition: o.8s;
+        }
+
+        .menu a {
+            display: block;
+            padding: 20px;
+        }
+
+        .esconder-menu {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+        }
+
+        #check:checked~.menu {
+            right: 0;
+        }
+
+        #personas {
+            flex-direction: column;
+        }
+
+        .contenido-icono {
+            flex-direction: column;
+        }
+
+        .contenido-icono div {
+            border: none !important;
+        }
+
+        .datos-form {
+            flex-direction: column;
+        }
+
+        .boton-empezar {
+            text-decoration: none;
+            transition: all 0.6s;
+            color: #fff;
+            border: 1px solid grey;
+            padding: 20px 40px;
+            align-self: baseline;
+        }
+
+        .boton-empezar:hover {
+            background-color: grey;
+            color: black;
+        }
+
+        .servicio-text {
+            text-align: center;
+        }
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        margin-top: 100px;
+        margin-left: 500px;
+        margin-right: 100px;
+    }
+
+    .container2 {
+        max-width: 800px;
+        margin: 50px auto;
+        margin-top: 100px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        margin-left: 400px;
+        margin-right: 100px;
+    }
+
+    h1 {
+        font-size: 32px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    p {
+        margin-bottom: 10px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+
+    .delete-button {
+        font-size: 16px;
+        padding: 9px 19px;
+        margin-left: 50px;
+        display: inline-block;
+        color: red;
+        border: none;
+        background-color: transparent;
+    }
+
+    .button-spacing {
+        margin-right: 0px;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        left: -140px;
+    }
+
+    .dropdown-content a {
+        color: #4d4d5c;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .modal {
+        z-index: 1000;
+        display: none;
+        background-color: rgba(255, 255, 255, 0.95);
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        text-align: center;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    .modal-actions button {
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .modal-content button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .modal-content .confirm-button {
+        background-color: #ff4d4d;
+        color: white;
+    }
+
+    .modal-content .cancel-button,
+    .modal-content .ok-button {
+        background-color: #ccc;
+        color: #333;
+    }
+
+    .recuadro-publicacion {
+        border: 1px solid #ccc;
+        padding: 16px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .agenda-item {
+        border: 1px solid #ccc;
+        padding: 16px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .agenda-item p {
+        margin: 5px 0;
+    }
+</style>

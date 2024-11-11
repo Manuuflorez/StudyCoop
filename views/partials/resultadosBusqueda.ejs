@@ -1,0 +1,17 @@
+<!-- views/partials/resultadosBusqueda.ejs -->
+
+<ul id="ultimas-ofrecer">
+    <% if (publicaciones && publicaciones.length > 0) { %>
+        <% publicaciones.forEach(publicacion => { %>
+            <li class="publicacion-item">
+                <h3><%= publicacion.tipo_servicio.charAt(0).toUpperCase() + publicacion.tipo_servicio.slice(1) %> - <%= publicacion.materia %></h3>
+                <p><strong>Tema:</strong> <%= publicacion.tema_interes %></p>
+                <p><strong>Fecha:</strong> <%= new Date(publicacion.fecha_reunion).toLocaleDateString() %></p>
+                <p><strong>Hora:</strong> <%= publicacion.hora %></p>
+                <button onclick='verDetalles(<%- JSON.stringify(publicacion) %>)' class="boton-detalles">Ver Detalles</button>
+            </li>
+        <% }) %>
+    <% } else { %>
+        <p>No hay publicaciones disponibles.</p>
+    <% } %>
+</ul>
